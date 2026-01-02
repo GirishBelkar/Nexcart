@@ -12,9 +12,14 @@ app.secret_key = 'dev_key_nexcart_2024'
 
 # --- CONFIGURATION ---
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(BASE_DIR, 'shop.db')
+
+# [VERCEL FIX] Use In-Memory DB instead of file-based 'shop.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:' 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['UPLOAD_FOLDER'] = os.path.join(BASE_DIR, 'static/images')
+
+# Ensure upload folder exists (even if read-only, avoids crash)
+UPLOAD_FOLDER = os.path.join(BASE_DIR, 'static/images')
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 db = SQLAlchemy(app)
 
@@ -39,8 +44,8 @@ class User(UserMixin, db.Model):
 class Product(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
-    price = db.Column(db.Float, nullable=False) # Changed to Float for cents
-    image = db.Column(db.String(100), nullable=True) # Allow null for fallback images
+    price = db.Column(db.Float, nullable=False) 
+    image = db.Column(db.String(100), nullable=True)
     description = db.Column(db.String(500), default="")
     category = db.Column(db.String(50), default="General")
 
@@ -123,20 +128,19 @@ def home():
 
 @app.route('/shop')
 def shop_page():
-    # Start the query
     query = Product.query
 
-    # 1. Search Logic
-    search_query = request.args.get('q') # From <input name="q">
+    # 1. Search Logic (Case Insensitive for better UX)
+    search_query = request.args.get('q')
     if search_query:
         query = query.filter(
             or_(
-                Product.name.contains(search_query),
-                Product.description.contains(search_query)
+                Product.name.ilike(f'%{search_query}%'),
+                Product.description.ilike(f'%{search_query}%')
             )
         )
 
-    # 2. Filter Logic (e.g. ?category=Hardware)
+    # 2. Filter Logic
     category_filter = request.args.get('category')
     if category_filter:
         query = query.filter_by(category=category_filter)
@@ -161,7 +165,6 @@ def add_to_cart(product_id):
     session['cart'] = cart_list
     
     flash('Item added to cart!', 'success')
-    # Return to previous page or shop
     return redirect(request.referrer or url_for('shop_page'))
 
 @app.route('/cart')
@@ -170,13 +173,20 @@ def view_cart():
     cart_items = []
     total_price = 0
     
-    # Simple logic: Fetch product for every ID in cart
-    # (Note: In a real app, you'd group by ID to show quantity)
-    for p_id in cart_ids:
-        item = Product.query.get(p_id)
-        if item:
-            cart_items.append(item)
-            total_price += item.price
+    if cart_ids:
+        # Optimized: Fetch all relevant products in ONE query
+        unique_ids = list(set(cart_ids))
+        products = Product.query.filter(Product.id.in_(unique_ids)).all()
+        
+        # Map for easy lookup
+        product_map = {p.id: p for p in products}
+        
+        # Reconstruct list based on session order
+        for p_id in cart_ids:
+            if p_id in product_map:
+                item = product_map[p_id]
+                cart_items.append(item)
+                total_price += item.price
             
     return render_template('cart.html', cart_items=cart_items, total=total_price)
 
@@ -185,7 +195,7 @@ def remove_from_cart(product_id):
     if 'cart' in session:
         cart_list = session['cart']
         if product_id in cart_list:
-            cart_list.remove(product_id) # Removes only the first occurrence
+            cart_list.remove(product_id) 
             session['cart'] = cart_list
             flash('Item removed.', 'info')
     return redirect(url_for('view_cart'))
@@ -197,7 +207,13 @@ def checkout():
         flash("Your cart is empty.", "warning")
         return redirect(url_for('shop_page'))
 
-    total_price = sum([Product.query.get(i).price for i in cart_ids if Product.query.get(i)])
+    # Calculate total safely
+    products_in_cart = Product.query.filter(Product.id.in_(cart_ids)).all()
+    product_map = {p.id: p.price for p in products_in_cart}
+    
+    total_price = 0
+    for p_id in cart_ids:
+        total_price += product_map.get(p_id, 0)
 
     if request.method == 'POST':
         customer_name = request.form.get('name')
@@ -236,7 +252,11 @@ def admin_panel():
         
         if file and file.filename != '':
             filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            # Check if upload folder is writable (it won't be on Vercel)
+            if os.access(app.config['UPLOAD_FOLDER'], os.W_OK):
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            else:
+                flash("Image upload skipped (Read-Only Mode)", "warning")
             
         new_product = Product(
             name=p_name, 
@@ -252,53 +272,39 @@ def admin_panel():
     products = Product.query.all()
     return render_template('admin.html', products=products)
 
-# --- DATABASE SETUP (THEMED DATA) ---
-def setup_database():
-    with app.app_context():
-        # Create folder for uploads
-        if not os.path.exists(app.config['UPLOAD_FOLDER']):
-            os.makedirs(app.config['UPLOAD_FOLDER'])
-            
-        db.create_all()
+# --- DATABASE SETUP ---
+def seed_data():
+    """Adds initial products if DB is empty"""
+    if not Product.query.first():
+        print("⚡ Seeding Nexcart data...")
         
-        if not Product.query.first():
-            print("⚡ Database empty. Seeding Nexcart data...")
-            
-            # Themed Data: Hardware, Software, Merch
-            seed_data = [
-                # Hardware
-                {"name": "Mechanical Keycaps (Python Ed.)", "category": "Hardware", "price": 49.99, "desc": "Custom PBT keycaps in blue and yellow colors."},
-                {"name": "Ultrawide Monitor Stand", "category": "Hardware", "price": 120.00, "desc": "Aluminum stand for your dual-monitor coding setup."},
-                {"name": "Ergonomic Vertical Mouse", "category": "Hardware", "price": 35.50, "desc": "Save your wrist during long debugging sessions."},
-                
-                # Software
-                {"name": "Flask Pro Template", "category": "Software", "price": 29.00, "desc": "Production-ready boilerplate with Auth, Admin, and Stripe."},
-                {"name": "API Access Key (Lifetime)", "category": "Software", "price": 99.00, "desc": "Unlimited requests to our machine learning backend."},
-                {"name": "Cloud Deployment Script", "category": "Software", "price": 15.00, "desc": "Automated bash scripts for AWS/DigitalOcean."},
-                
-                # Merchandise
-                {"name": "Developer Hoodie (Black)", "category": "Merchandise", "price": 55.00, "desc": "Heavyweight cotton. 'It works on my machine' print."},
-                {"name": "Vacuum Insulated Mug", "category": "Merchandise", "price": 22.00, "desc": "Keeps your coffee hot for 6 hours while you code."},
-                {"name": "Laptop Sticker Pack", "category": "Merchandise", "price": 8.00, "desc": "High-quality vinyl stickers: Python, Docker, Linux."},
-                
-                # Accessories
-                {"name": "Blue Light Glasses", "category": "Accessories", "price": 45.00, "desc": "Protect your eyes from screen fatigue."},
-                {"name": "Desk Mat (900x400)", "category": "Accessories", "price": 25.00, "desc": "Smooth surface with code cheat sheets printed on it."}
-            ]
-            
-            for item in seed_data:
-                p = Product(
-                    name=item['name'],
-                    price=item['price'],
-                    description=item['desc'],
-                    category=item['category'],
-                    image=None # Set to None so HTML uses Unsplash fallback
-                )
-                db.session.add(p)
-            
-            db.session.commit()
-            print(f"✅ Added {len(seed_data)} developer-themed products!")
+        data = [
+            {"name": "Mechanical Keycaps (Python Ed.)", "category": "Hardware", "price": 49.99, "desc": "Custom PBT keycaps in blue and yellow colors."},
+            {"name": "Ultrawide Monitor Stand", "category": "Hardware", "price": 120.00, "desc": "Aluminum stand for your dual-monitor coding setup."},
+            {"name": "Ergonomic Vertical Mouse", "category": "Hardware", "price": 35.50, "desc": "Save your wrist during long debugging sessions."},
+            {"name": "Flask Pro Template", "category": "Software", "price": 29.00, "desc": "Production-ready boilerplate with Auth, Admin, and Stripe."},
+            {"name": "API Access Key (Lifetime)", "category": "Software", "price": 99.00, "desc": "Unlimited requests to our machine learning backend."},
+            {"name": "Cloud Deployment Script", "category": "Software", "price": 15.00, "desc": "Automated bash scripts for AWS/DigitalOcean."},
+            {"name": "Developer Hoodie (Black)", "category": "Merchandise", "price": 55.00, "desc": "Heavyweight cotton. 'It works on my machine' print."},
+            {"name": "Vacuum Insulated Mug", "category": "Merchandise", "price": 22.00, "desc": "Keeps your coffee hot for 6 hours while you code."},
+            {"name": "Laptop Sticker Pack", "category": "Merchandise", "price": 8.00, "desc": "High-quality vinyl stickers: Python, Docker, Linux."},
+            {"name": "Blue Light Glasses", "category": "Accessories", "price": 45.00, "desc": "Protect your eyes from screen fatigue."},
+            {"name": "Desk Mat (900x400)", "category": "Accessories", "price": 25.00, "desc": "Smooth surface with code cheat sheets printed on it."}
+        ]
+        
+        for item in data:
+            p = Product(name=item['name'], price=item['price'], description=item['desc'], category=item['category'], image=None)
+            db.session.add(p)
+        
+        db.session.commit()
+        print(f"✅ Added {len(data)} products!")
+
+# [VERCEL FIX] Run DB creation logic in global scope so Vercel executes it on boot
+with app.app_context():
+    # Create tables in memory
+    db.create_all()
+    # Populate with data
+    seed_data()
 
 if __name__ == '__main__':
-    setup_database()
     app.run(debug=True)
