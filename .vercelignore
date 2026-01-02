@@ -1,0 +1,9 @@
+venv/
+.env
+__pycache__/
+.git/
+.vercel/
+node_modules/
+*.sqlite3
+*.db
+*.log
