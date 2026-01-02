@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}Login | Nexcart{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center align-items-center" style="min-height: 60vh;">
+        <div class="col-md-6 col-lg-5">
+            
+            <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+                <div class="card-body p-5">
+                    
+                    <!-- Header -->
+                    <div class="text-center mb-5">
+                        <div class="d-inline-flex align-items-center justify-content-center bg-primary bg-opacity-10 text-primary rounded-circle mb-3" style="width: 70px; height: 70px;">
+                            <i class="fas fa-user-circle fa-2x"></i>
+                        </div>
+                        <h2 class="fw-bold text-dark">Welcome Back</h2>
+                        <p class="text-muted small">Sign in to access your dashboard.</p>
+                    </div>
+
+                    <form method="POST">
+                        <!-- Username Input -->
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold text-muted ms-1">Username</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0 text-muted rounded-start-3 ps-3">
+                                    <i class="fas fa-user"></i>
+                                </span>
+                                <input type="text" name="username" class="form-control border-start-0 bg-light ps-0 py-2" 
+                                       placeholder="Enter your username" autocomplete="username" required autofocus>
+                            </div>
+                        </div>
+
+                        <!-- Password Input -->
+                        <div class="mb-4">
+                            <div class="d-flex justify-content-between">
+                                <label class="form-label small fw-bold text-muted ms-1">Password</label>
+                                <a href="#" class="text-decoration-none small text-primary fw-bold">Forgot password?</a>
+                            </div>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0 text-muted rounded-start-3 ps-3">
+                                    <i class="fas fa-lock"></i>
+                                </span>
+                                <input type="password" name="password" class="form-control border-start-0 bg-light ps-0 py-2" 
+                                       placeholder="Enter your password" autocomplete="current-password" required>
+                            </div>
+                        </div>
+
+                        <!-- Remember Me & Submit -->
+                        <div class="d-grid gap-3">
+                            <div class="form-check ms-1">
+                                <input class="form-check-input" type="checkbox" id="rememberMe">
+                                <label class="form-check-label small text-muted" for="rememberMe">
+                                    Remember me for 30 days
+                                </label>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-lg rounded-pill shadow-sm fw-bold">
+                                Sign In <i class="fas fa-arrow-right ms-2"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Card Footer -->
+                <div class="card-footer bg-light border-0 py-4 text-center">
+                    <p class="mb-0 text-muted small">
+                        Don't have an account? 
+                        <a href="{{ url_for('register') }}" class="text-primary fw-bold text-decoration-none">Create account</a>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Copyright footer -->
+            <div class="text-center mt-4 text-muted small opacity-75">
+                &copy; 2024 Nexcart. Secure Login.
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

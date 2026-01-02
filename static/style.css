@@ -1,0 +1,180 @@
+/* THE PREMIUM UPGRADE - NEXCART 2024 */
+
+/* 1. IMPORT MODERN FONTS */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
+
+:root {
+    --primary-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); /* Indigo to Purple */
+    --hover-gradient: linear-gradient(135deg, #4f46e5 0%, #9333ea 100%);
+    --surface: #ffffff;
+    --background: #f8fafc;
+    --text-dark: #0f172a;
+    --text-light: #64748b;
+    --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* 2. GLOBAL RESET */
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--background);
+    color: var(--text-dark);
+    -webkit-font-smoothing: antialiased;
+    padding-top: 80px; /* Offset for fixed navbar */
+}
+
+h1, h2, h3, h4, h5 {
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    color: var(--text-dark);
+}
+
+/* 3. PREMIUM NAVBAR */
+.navbar {
+    background: rgba(15, 23, 42, 0.95) !important; /* Dark Translucent */
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 1rem 0;
+}
+
+.navbar-brand {
+    font-weight: 800;
+    font-size: 1.5rem;
+    background: var(--primary-gradient);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent; 
+}
+
+.nav-link {
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.nav-link:hover {
+    color: #a855f7 !important;
+}
+
+/* 4. PRODUCT CARDS */
+.card {
+    border: none;
+    border-radius: 16px;
+    background: var(--surface);
+    box-shadow: var(--shadow-sm);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    height: 100%; /* Equal height in grid */
+}
+
+.card:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: var(--shadow-lg);
+}
+
+/* CRITICAL FIX FOR E-COMMERCE GRID */
+.card-img-top {
+    padding: 1.5rem;
+    height: 250px;       /* Force fixed height */
+    width: 100%;
+    object-fit: contain; /* Keep aspect ratio (don't stretch) */
+    background: #fff;    /* White background for PNGs */
+    transition: transform 0.5s ease;
+}
+
+.card:hover .card-img-top {
+    transform: scale(1.1) rotate(2deg);
+}
+
+.card-body {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.card-title {
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.card-text {
+    color: var(--text-light);
+    flex-grow: 1; /* Pushes button to bottom */
+}
+
+/* 5. BUTTONS */
+.btn-primary {
+    background: var(--primary-gradient);
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background: var(--hover-gradient);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(99, 102, 241, 0.6);
+}
+
+.btn-outline-dark {
+    border-radius: 8px;
+    border-width: 2px;
+    font-weight: 600;
+}
+
+/* 6. HERO SECTION & CAROUSEL */
+.carousel-item img {
+    border-radius: 24px;
+    max-height: 400px;
+    object-fit: cover;
+}
+
+.carousel-inner {
+    border-radius: 24px;
+    box-shadow: var(--shadow-lg);
+}
+
+/* 7. INPUT FIELDS */
+.form-control {
+    border-radius: 10px;
+    border: 2px solid #e2e8f0;
+    padding: 12px;
+    transition: border-color 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+    outline: none;
+}
+
+/* 8. ALERTS & BADGES */
+.badge {
+    font-weight: 600;
+    padding: 0.5em 0.8em;
+}
+
+.alert {
+    border-radius: 12px;
+    border: none;
+    box-shadow: var(--shadow-sm);
+}
+
+/* 9. PAGE ANIMATION */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.container {
+    animation: fadeInUp 0.8s ease-out;
+}

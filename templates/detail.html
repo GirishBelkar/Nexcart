@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block title %}{{ product.name }} | Nexcart{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    
+    <!-- Breadcrumb / Back Button -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <a href="{{ url_for('shop_page') }}" class="text-decoration-none text-muted fw-bold hover-primary">
+            <i class="fas fa-arrow-left me-2"></i>Back to Products
+        </a>
+    </nav>
+
+    <div class="row g-5 align-items-center">
+        <!-- LEFT COLUMN: Product Image -->
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden position-relative">
+                <div class="p-5 bg-white d-flex justify-content-center align-items-center" style="min-height: 400px;">
+                    
+                    <!-- CRITICAL FIX: Image Logic with Fallback -->
+                    {% if product.image_url %}
+                        <img src="{{ product.image_url }}" 
+                             alt="{{ product.name }}" 
+                             class="img-fluid object-fit-contain" 
+                             style="max-height: 350px; transition: transform 0.3s ease;">
+                    {% else %}
+                        <!-- Fallback for Seed Data -->
+                        <img src="https://source.unsplash.com/random/600x600/?{{ product.category }}" 
+                             alt="{{ product.name }}" 
+                             class="img-fluid object-fit-cover w-100" 
+                             style="height: 400px;">
+                    {% endif %}
+                    
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT COLUMN: Product Details -->
+        <div class="col-lg-6">
+            <div class="ps-lg-4">
+                <!-- Category Badge -->
+                <span class="badge bg-primary bg-opacity-10 text-primary mb-2 px-3 py-2 rounded-pill">
+                    {{ product.category }}
+                </span>
+
+                <!-- Title -->
+                <h1 class="display-5 fw-bolder mb-3">{{ product.name }}</h1>
+
+                <!-- Reviews (Static Visual) -->
+                <div class="mb-3 text-warning small">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star-half-alt"></i>
+                    <span class="text-muted ms-2">(4.8/5 reviews)</span>
+                </div>
+
+                <!-- Price -->
+                <div class="mb-4">
+                    <span class="display-6 fw-bold text-dark">${{ "%.2f"|format(product.price) }}</span>
+                    <!-- Fake "Original Price" for visual effect -->
+                    <span class="text-muted text-decoration-line-through ms-2 fs-5">
+                        ${{ "%.2f"|format(product.price * 1.2) }}
+                    </span>
+                </div>
+
+                <!-- Description -->
+                <p class="lead text-muted mb-4">
+                    {% if product.description %}
+                        {{ product.description }}
+                    {% else %}
+                        Elevate your coding experience with this premium item. Designed for performance and built to last.
+                    {% endif %}
+                </p>
+
+                <!-- Actions -->
+                <div class="d-flex gap-3 mb-5">
+                    <a href="{{ url_for('add_to_cart', product_id=product.id) }}" 
+                       class="btn btn-primary btn-lg rounded-pill px-5 shadow-sm flex-grow-1 fw-bold">
+                        <i class="fas fa-shopping-cart me-2"></i> Add to Cart
+                    </a>
+                    <button class="btn btn-outline-dark btn-lg rounded-circle shadow-sm" data-bs-toggle="tooltip" title="Add to Wishlist">
+                        <i class="far fa-heart"></i>
+                    </button>
+                </div>
+
+                <!-- Accordion Info -->
+                <div class="accordion accordion-flush" id="productAccordion">
+                    <div class="accordion-item border-0">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button fw-bold bg-transparent" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne">
+                                <i class="fas fa-box-open me-2 text-secondary"></i> Product Features
+                            </button>
+                        </h2>
+                        <div id="flush-collapseOne" class="accordion-collapse collapse show" data-bs-parent="#productAccordion">
+                            <div class="accordion-body text-muted">
+                                <ul class="list-unstyled mb-0">
+                                    <li><i class="fas fa-check text-success me-2"></i>Premium build quality</li>
+                                    <li><i class="fas fa-check text-success me-2"></i>Verified for Developers</li>
+                                    <li><i class="fas fa-check text-success me-2"></i>In Stock & Ready to Ship</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item border-0">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed fw-bold bg-transparent" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo">
+                                <i class="fas fa-truck me-2 text-secondary"></i> Shipping & Returns
+                            </button>
+                        </h2>
+                        <div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#productAccordion">
+                            <div class="accordion-body text-muted">
+                                Free shipping on all orders over $50. 30-day money-back guarantee if you are not satisfied with your purchase.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

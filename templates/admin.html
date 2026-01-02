@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-4">
+    <h2 class="mb-4">Admin Dashboard</h2>
+    
+    <div class="row">
+        <!-- LEFT COLUMN: ADD PRODUCT -->
+        <div class="col-lg-4 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-white border-bottom">
+                    <h5 class="mb-0 text-primary"><i class="fas fa-plus-circle"></i> Add New Product</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" enctype="multipart/form-data">
+                        <!-- Name -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Product Name</label>
+                            <input type="text" name="product_name" class="form-control" placeholder="e.g. Developer Hoodie" required>
+                        </div>
+                        
+                        <!-- Category (Added) -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Category</label>
+                            <select name="product_category" class="form-select">
+                                <option value="General">General</option>
+                                <option value="Hardware">Hardware</option>
+                                <option value="Software">Software</option>
+                                <option value="Merchandise">Merchandise</option>
+                                <option value="Accessories">Accessories</option>
+                            </select>
+                        </div>
+
+                        <!-- Price (Fixed step for cents) -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Price ($)</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" name="product_price" class="form-control" placeholder="0.00" step="0.01" required>
+                            </div>
+                        </div>
+                        
+                        <!-- Description (Added) -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Description</label>
+                            <textarea name="product_desc" class="form-control" rows="3" placeholder="Short details about the product..."></textarea>
+                        </div>
+
+                        <!-- Image -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Product Image</label>
+                            <input type="file" name="product_image" class="form-control" accept="image/*">
+                            <div class="form-text text-muted">Leave empty to use a random placeholder.</div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary w-100 py-2">
+                            Add Product
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT COLUMN: ORDERS & INVENTORY -->
+        <div class="col-lg-8">
+            
+            <!-- ORDERS TABLE -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-white border-bottom d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Recent Orders</h5>
+                    <span class="badge bg-light text-dark border">Latest 5</span>
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-hover mb-0 align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Customer</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if orders %}
+                                {% for order in orders %}
+                                <tr>
+                                    <td><span class="badge bg-secondary">#{{ order.id }}</span></td>
+                                    <td>
+                                        <div class="fw-bold">{{ order.customer_name }}</div>
+                                        <small class="text-muted">{{ order.address }}</small>
+                                    </td>
+                                    <td>${{ "%.2f"|format(order.total_price) }}</td>
+                                    <td>
+                                        {% if order.status == 'Pending' %}
+                                            <span class="badge bg-warning text-dark">Pending</span>
+                                        {% else %}
+                                            <span class="badge bg-success">Completed</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="4" class="text-center py-4 text-muted">
+                                        <i class="fas fa-box-open fa-2x mb-2"></i><br>
+                                        No orders found yet.
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- INVENTORY LIST -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-white border-bottom">
+                    <h5 class="mb-0">Current Inventory</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                        <table class="table table-hover mb-0 align-middle">
+                            <thead class="table-light sticky-top">
+                                <tr>
+                                    <th style="width: 80px;">Image</th>
+                                    <th>Product Details</th>
+                                    <th>Price</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for product in products %}
+                                <tr>
+                                    <td>
+                                        {% if product.image_url %}
+                                            <img src="{{ product.image_url }}" class="rounded" style="width: 50px; height: 50px; object-fit: cover;">
+                                        {% else %}
+                                            <!-- Fallback for Seed Data -->
+                                            <img src="https://source.unsplash.com/random/100x100/?{{ product.category }}" class="rounded" style="width: 50px; height: 50px; object-fit: cover;">
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="fw-bold">{{ product.name }}</div>
+                                        <small class="text-muted">{{ product.category }}</small>
+                                    </td>
+                                    <td class="text-success fw-bold">${{ "%.2f"|format(product.price) }}</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-danger" disabled title="Feature coming soon">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="4" class="text-center p-4">No products in inventory.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

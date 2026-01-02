@@ -1,0 +1,407 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="register-page">
+    <div class="container">
+        <div class="row justify-content-center align-items-center min-vh-100 py-5">
+            <div class="col-lg-5 col-md-7 col-sm-10">
+                
+                <!-- Registration Card -->
+                <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+                    
+                    <!-- Card Header with Gradient -->
+                    <div class="card-header bg-gradient-success text-white text-center py-4">
+                        <div class="register-icon mb-3">
+                            <i class="bi bi-person-plus-fill display-4"></i>
+                        </div>
+                        <h3 class="mb-1 fw-bold">Create Account</h3>
+                        <p class="mb-0 opacity-75">Join us today! It's free.</p>
+                    </div>
+                    
+                    <!-- Card Body -->
+                    <div class="card-body p-4 p-md-5">
+                        
+                        <!-- Flash Messages -->
+                        {% with messages = get_flashed_messages() %}
+                            {% if messages %}
+                                {% for message in messages %}
+                                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                        <i class="bi bi-exclamation-circle me-2"></i>{{ message }}
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                        {% endwith %}
+                        
+                        <!-- Registration Form -->
+                        <form method="POST" id="registerForm" novalidate>
+                            
+                            <!-- Username Field -->
+                            <div class="mb-4">
+                                <label class="form-label fw-semibold">
+                                    <i class="bi bi-person me-1"></i> Username
+                                </label>
+                                <div class="input-group input-group-lg">
+                                    <span class="input-group-text bg-light border-end-0">
+                                        <i class="bi bi-at text-muted"></i>
+                                    </span>
+                                    <input type="text" 
+                                           name="username" 
+                                           id="username"
+                                           class="form-control border-start-0 ps-0" 
+                                           placeholder="Choose a username"
+                                           minlength="3"
+                                           maxlength="20"
+                                           pattern="[a-zA-Z0-9_]+"
+                                           required>
+                                </div>
+                                <div class="form-text">
+                                    <small>3-20 characters, letters, numbers, and underscores only</small>
+                                </div>
+                            </div>
+                            
+                            <!-- Email Field (Optional) -->
+                            <div class="mb-4">
+                                <label class="form-label fw-semibold">
+                                    <i class="bi bi-envelope me-1"></i> Email <span class="text-muted">(Optional)</span>
+                                </label>
+                                <div class="input-group input-group-lg">
+                                    <span class="input-group-text bg-light border-end-0">
+                                        <i class="bi bi-envelope text-muted"></i>
+                                    </span>
+                                    <input type="email" 
+                                           name="email" 
+                                           id="email"
+                                           class="form-control border-start-0 ps-0" 
+                                           placeholder="your@email.com">
+                                </div>
+                            </div>
+                            
+                            <!-- Password Field -->
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">
+                                    <i class="bi bi-lock me-1"></i> Password
+                                </label>
+                                <div class="input-group input-group-lg">
+                                    <span class="input-group-text bg-light border-end-0">
+                                        <i class="bi bi-key text-muted"></i>
+                                    </span>
+                                    <input type="password" 
+                                           name="password" 
+                                           id="password"
+                                           class="form-control border-start-0 border-end-0 ps-0" 
+                                           placeholder="Create a password"
+                                           minlength="6"
+                                           required>
+                                    <button class="btn btn-light border border-start-0" 
+                                            type="button" 
+                                            id="togglePassword">
+                                        <i class="bi bi-eye" id="eyeIcon"></i>
+                                    </button>
+                                </div>
+                                
+                                <!-- Password Strength Meter -->
+                                <div class="password-strength mt-2">
+                                    <div class="progress" style="height: 5px;">
+                                        <div class="progress-bar" id="strengthBar" role="progressbar" style="width: 0%"></div>
+                                    </div>
+                                    <small class="text-muted" id="strengthText">Password strength</small>
+                                </div>
+                            </div>
+                            
+                            <!-- Confirm Password Field -->
+                            <div class="mb-4">
+                                <label class="form-label fw-semibold">
+                                    <i class="bi bi-lock-fill me-1"></i> Confirm Password
+                                </label>
+                                <div class="input-group input-group-lg">
+                                    <span class="input-group-text bg-light border-end-0">
+                                        <i class="bi bi-shield-check text-muted"></i>
+                                    </span>
+                                    <input type="password" 
+                                           name="confirm_password" 
+                                           id="confirmPassword"
+                                           class="form-control border-start-0 ps-0" 
+                                           placeholder="Confirm your password"
+                                           required>
+                                </div>
+                                <div id="passwordMatch" class="form-text"></div>
+                            </div>
+                            
+                            <!-- Terms & Conditions -->
+                            <div class="mb-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="agreeTerms" required>
+                                    <label class="form-check-label" for="agreeTerms">
+                                        I agree to the <a href="#" class="text-success">Terms of Service</a> 
+                                        and <a href="#" class="text-success">Privacy Policy</a>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <!-- Submit Button -->
+                            <button type="submit" class="btn btn-success btn-lg w-100 fw-bold py-3" id="submitBtn">
+                                <span id="btnText">
+                                    <i class="bi bi-person-plus me-2"></i>Create Account
+                                </span>
+                                <span id="btnLoader" class="d-none">
+                                    <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+                                    Creating Account...
+                                </span>
+                            </button>
+                        </form>
+                        
+                        <!-- Divider -->
+                        <div class="divider my-4">
+                            <span class="divider-text bg-white px-3 text-muted">or sign up with</span>
+                        </div>
+                        
+                        <!-- Social Login Buttons -->
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <button class="btn btn-outline-secondary w-100 py-2">
+                                    <i class="bi bi-google me-2 text-danger"></i>Google
+                                </button>
+                            </div>
+                            <div class="col-6">
+                                <button class="btn btn-outline-secondary w-100 py-2">
+                                    <i class="bi bi-facebook me-2 text-primary"></i>Facebook
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Card Footer -->
+                    <div class="card-footer bg-light text-center py-4">
+                        <p class="mb-0">
+                            Already have an account? 
+                            <a href="{{ url_for('login') }}" class="text-success fw-bold text-decoration-none">
+                                Sign In <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Back to Home -->
+                <div class="text-center mt-4">
+                    <a href="{{ url_for('home') }}" class="text-muted text-decoration-none">
+                        <i class="bi bi-arrow-left me-1"></i> Back to Home
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Custom Styles -->
+<style>
+    .register-page {
+        background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
+        min-height: 100vh;
+    }
+    
+    .bg-gradient-success {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    }
+    
+    .register-icon {
+        width: 80px;
+        height: 80px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto;
+        animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+    }
+    
+    .card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 1rem 3rem rgba(0,0,0,.175)!important;
+    }
+    
+    .form-control:focus, .form-check-input:focus {
+        border-color: #28a745;
+        box-shadow: 0 0 0 0.25rem rgba(40, 167, 69, 0.15);
+    }
+    
+    .input-group-text {
+        border-color: #ced4da;
+    }
+    
+    .input-group:focus-within .input-group-text {
+        border-color: #28a745;
+    }
+    
+    .btn-success {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        border: none;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-success:hover {
+        background: linear-gradient(135deg, #218838 0%, #1aa179 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 20px rgba(40, 167, 69, 0.4);
+    }
+    
+    .divider {
+        display: flex;
+        align-items: center;
+        text-align: center;
+    }
+    
+    .divider::before,
+    .divider::after {
+        content: '';
+        flex: 1;
+        border-bottom: 1px solid #dee2e6;
+    }
+    
+    .divider-text {
+        position: relative;
+    }
+    
+    /* Password Strength Colors */
+    .strength-weak { background-color: #dc3545 !important; }
+    .strength-medium { background-color: #ffc107 !important; }
+    .strength-strong { background-color: #28a745 !important; }
+    
+    /* Input Validation Styles */
+    .form-control.is-valid {
+        border-color: #28a745;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%2328a745' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e");
+    }
+    
+    .form-control.is-invalid {
+        border-color: #dc3545;
+    }
+    
+    /* Floating Animation */
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+    }
+    
+    .floating {
+        animation: float 3s ease-in-out infinite;
+    }
+</style>
+
+<!-- JavaScript for Interactivity -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const password = document.getElementById('password');
+    const confirmPassword = document.getElementById('confirmPassword');
+    const strengthBar = document.getElementById('strengthBar');
+    const strengthText = document.getElementById('strengthText');
+    const togglePassword = document.getElementById('togglePassword');
+    const eyeIcon = document.getElementById('eyeIcon');
+    const form = document.getElementById('registerForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const btnText = document.getElementById('btnText');
+    const btnLoader = document.getElementById('btnLoader');
+    const passwordMatch = document.getElementById('passwordMatch');
+    
+    // Toggle Password Visibility
+    togglePassword.addEventListener('click', function() {
+        const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+        password.setAttribute('type', type);
+        eyeIcon.classList.toggle('bi-eye');
+        eyeIcon.classList.toggle('bi-eye-slash');
+    });
+    
+    // Password Strength Checker
+    password.addEventListener('input', function() {
+        const value = this.value;
+        let strength = 0;
+        let text = '';
+        
+        if (value.length >= 6) strength += 25;
+        if (value.length >= 10) strength += 25;
+        if (/[a-z]/.test(value) && /[A-Z]/.test(value)) strength += 25;
+        if (/\d/.test(value)) strength += 15;
+        if (/[!@#$%^&*(),.?":{}|<>]/.test(value)) strength += 10;
+        
+        strengthBar.style.width = strength + '%';
+        strengthBar.classList.remove('strength-weak', 'strength-medium', 'strength-strong');
+        
+        if (strength <= 25) {
+            strengthBar.classList.add('strength-weak');
+            text = '🔴 Weak password';
+        } else if (strength <= 50) {
+            strengthBar.classList.add('strength-medium');
+            text = '🟡 Medium password';
+        } else {
+            strengthBar.classList.add('strength-strong');
+            text = '🟢 Strong password';
+        }
+        
+        strengthText.textContent = text;
+        checkPasswordMatch();
+    });
+    
+    // Check Password Match
+    confirmPassword.addEventListener('input', checkPasswordMatch);
+    
+    function checkPasswordMatch() {
+        if (confirmPassword.value === '') {
+            passwordMatch.textContent = '';
+            confirmPassword.classList.remove('is-valid', 'is-invalid');
+        } else if (password.value === confirmPassword.value) {
+            passwordMatch.innerHTML = '<span class="text-success"><i class="bi bi-check-circle me-1"></i>Passwords match!</span>';
+            confirmPassword.classList.add('is-valid');
+            confirmPassword.classList.remove('is-invalid');
+        } else {
+            passwordMatch.innerHTML = '<span class="text-danger"><i class="bi bi-x-circle me-1"></i>Passwords do not match</span>';
+            confirmPassword.classList.add('is-invalid');
+            confirmPassword.classList.remove('is-valid');
+        }
+    }
+    
+    // Username Validation
+    const username = document.getElementById('username');
+    username.addEventListener('input', function() {
+        const value = this.value;
+        const isValid = /^[a-zA-Z0-9_]{3,20}$/.test(value);
+        
+        if (value.length > 0) {
+            if (isValid) {
+                this.classList.add('is-valid');
+                this.classList.remove('is-invalid');
+            } else {
+                this.classList.add('is-invalid');
+                this.classList.remove('is-valid');
+            }
+        } else {
+            this.classList.remove('is-valid', 'is-invalid');
+        }
+    });
+    
+    // Form Submission with Loading State
+    form.addEventListener('submit', function(e) {
+        if (password.value !== confirmPassword.value) {
+            e.preventDefault();
+            passwordMatch.innerHTML = '<span class="text-danger"><i class="bi bi-x-circle me-1"></i>Passwords do not match!</span>';
+            confirmPassword.focus();
+            return;
+        }
+        
+        // Show loading state
+        btnText.classList.add('d-none');
+        btnLoader.classList.remove('d-none');
+        submitBtn.disabled = true;
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,315 @@
+{% extends "base.html" %}
+
+{% block title %}Home | Nexcart Marketplace{% endblock %}
+
+{% block content %}
+
+<!-- CUSTOM STYLES FOR THIS PAGE -->
+<style>
+    /* Gradient Text & Backgrounds */
+    .text-gradient {
+        background: linear-gradient(135deg, #0d6efd, #0dcaf0);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    .bg-gradient-primary-soft {
+        background: linear-gradient(135deg, rgba(13, 110, 253, 0.1), rgba(13, 202, 240, 0.1));
+    }
+
+    /* Animations */
+    .hero-img-container {
+        animation: float 6s ease-in-out infinite;
+    }
+    @keyframes float {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-20px); }
+        100% { transform: translateY(0px); }
+    }
+    .hover-lift {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .hover-lift:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 1rem 3rem rgba(0,0,0,.15)!important;
+    }
+    
+    /* Product Cards */
+    .card-product-img {
+        height: 250px; /* Fixed height for consistency */
+        object-fit: contain; /* Don't crop, show full item */
+        background: #fff;
+        border-bottom: 1px solid #eee;
+        padding: 1rem;
+    }
+</style>
+
+<div class="container py-4">
+
+    <!-- 1. HERO SECTION -->
+    <section class="py-5 mb-5 overflow-hidden">
+        <div class="row align-items-center g-5">
+            <!-- Text Content -->
+            <div class="col-lg-6 order-2 order-lg-1">
+                <div class="mb-4">
+                    <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 rounded-pill px-3 py-2 fw-semibold">
+                        <i class="fas fa-rocket me-2"></i>Nexcart v2.0 Live
+                    </span>
+                </div>
+                
+                <h1 class="display-3 fw-bolder mb-3 ls-tight">
+                    Gear Up Your <br>
+                    <span class="text-gradient">Python Workflow</span>
+                </h1>
+                
+                <p class="lead text-muted mb-5" style="max-width: 520px;">
+                    The premium marketplace for developers. Discover high-quality merchandise, verified software licenses, and coding accessories designed for the Flask community.
+                </p>
+                
+                <div class="d-flex gap-3 flex-column flex-sm-row">
+                    <a href="{{ url_for('shop_page') }}" class="btn btn-primary btn-lg rounded-pill px-5 shadow-lg fw-bold">
+                        Start Shopping
+                    </a>
+                    {% if not current_user.is_authenticated %}
+                    <a href="{{ url_for('register') }}" class="btn btn-outline-dark btn-lg rounded-pill px-4 fw-bold">
+                        Create Account
+                    </a>
+                    {% endif %}
+                </div>
+                
+                <!-- Mini Social Proof -->
+                <div class="mt-5 pt-3 border-top border-light d-flex align-items-center gap-4 text-muted small">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-check-circle text-success me-2"></i> 100% Secure
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-check-circle text-success me-2"></i> Instant Keys
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-check-circle text-success me-2"></i> 5k+ Users
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Hero Image -->
+            <div class="col-lg-6 order-1 order-lg-2 text-center position-relative">
+                <!-- Decorative Blob Background -->
+                <div class="position-absolute top-50 start-50 translate-middle w-100 h-100 bg-gradient-primary-soft rounded-circle" style="filter: blur(60px); z-index: -1;"></div>
+                
+                <div class="hero-img-container position-relative">
+                    <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" 
+                         alt="Coding Setup" 
+                         class="img-fluid rounded-4 shadow-lg border border-4 border-white">
+                    
+                    <!-- Floating Badge -->
+                    <div class="position-absolute top-100 start-0 translate-middle-y bg-white p-3 rounded-4 shadow-lg ms-4 d-none d-md-block border border-light">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="bg-primary text-white p-2 rounded-circle">
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <div class="text-start lh-1">
+                                <span class="d-block fw-bold fs-5">4.9/5</span>
+                                <small class="text-muted">Customer Rating</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2. PERSONALIZED WELCOME (Logged In) -->
+    {% if current_user.is_authenticated %}
+    <section class="mb-5">
+        <div class="card border-0 shadow-sm rounded-4 bg-dark text-white overflow-hidden position-relative">
+            <div class="card-body p-5 position-relative" style="z-index: 2;">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h2 class="fw-bold mb-2">Welcome back, {{ current_user.username }}! 👋</h2>
+                        <p class="text-white-50 mb-0">You have full access to our premium collection.</p>
+                    </div>
+                    <div class="col-md-4 text-md-end mt-4 mt-md-0">
+                        {% if current_user.is_admin %}
+                            <a href="{{ url_for('admin_panel') }}" class="btn btn-warning rounded-pill fw-bold px-4">
+                                <i class="fas fa-crown me-2"></i>Admin Panel
+                            </a>
+                        {% else %}
+                             <a href="{{ url_for('shop_page') }}" class="btn btn-light rounded-pill fw-bold px-4">
+                                View New Arrivals
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <!-- Abstract Decoration -->
+            <div class="position-absolute top-0 end-0 bg-primary opacity-50 rounded-circle" style="width: 200px; height: 200px; filter: blur(50px); transform: translate(50%, -50%);"></div>
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- 3. BROWSE BY CATEGORY -->
+    <section class="mb-5 py-4">
+        <div class="d-flex justify-content-between align-items-end mb-4">
+            <h3 class="fw-bold m-0">Browse Categories</h3>
+            <a href="{{ url_for('shop_page') }}" class="text-decoration-none fw-bold">View All <i class="fas fa-arrow-right small ms-1"></i></a>
+        </div>
+        <div class="row g-4">
+            <!-- Category 1 -->
+            <div class="col-md-4">
+                <a href="{{ url_for('shop_page', category='Software') }}" class="card bg-light border-0 h-100 rounded-4 hover-lift text-decoration-none text-dark">
+                    <div class="card-body p-4 d-flex align-items-center gap-3">
+                        <div class="bg-white p-3 rounded-circle shadow-sm text-primary">
+                            <i class="fas fa-laptop-code fa-2x"></i>
+                        </div>
+                        <div>
+                            <h5 class="fw-bold mb-1">Software</h5>
+                            <p class="text-muted small mb-0">Licenses & APIs</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <!-- Category 2 -->
+            <div class="col-md-4">
+                <a href="{{ url_for('shop_page', category='Merchandise') }}" class="card bg-light border-0 h-100 rounded-4 hover-lift text-decoration-none text-dark">
+                    <div class="card-body p-4 d-flex align-items-center gap-3">
+                        <div class="bg-white p-3 rounded-circle shadow-sm text-danger">
+                            <i class="fas fa-tshirt fa-2x"></i>
+                        </div>
+                        <div>
+                            <h5 class="fw-bold mb-1">Merchandise</h5>
+                            <p class="text-muted small mb-0">Hoodies & Stickers</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <!-- Category 3 -->
+            <div class="col-md-4">
+                <a href="{{ url_for('shop_page', category='Accessories') }}" class="card bg-light border-0 h-100 rounded-4 hover-lift text-decoration-none text-dark">
+                    <div class="card-body p-4 d-flex align-items-center gap-3">
+                        <div class="bg-white p-3 rounded-circle shadow-sm text-success">
+                            <i class="fas fa-keyboard fa-2x"></i>
+                        </div>
+                        <div>
+                            <h5 class="fw-bold mb-1">Accessories</h5>
+                            <p class="text-muted small mb-0">Keyboards & Mice</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. FEATURED PRODUCTS (REAL DATA) -->
+    <section class="mb-5">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">Trending This Week</h2>
+            <p class="text-muted">Top picks from the Nexcart community</p>
+        </div>
+        
+        <div class="row g-4">
+            <!-- Dynamic Loop over featured_products -->
+            {% for product in featured_products %}
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm rounded-4 hover-lift">
+                    <div class="position-relative overflow-hidden">
+                        <span class="badge bg-danger position-absolute top-0 start-0 m-3 rounded-pill" style="z-index: 2;">Hot</span>
+                        
+                        <!-- Clickable Image Area -->
+                        <a href="{{ url_for('product_detail', product_id=product.id) }}" class="d-block">
+                            {% if product.image_url %}
+                                <img src="{{ product.image_url }}" class="card-img-top card-product-img rounded-top-4" alt="{{ product.name }}">
+                            {% else %}
+                                <img src="https://source.unsplash.com/random/500x500/?{{ product.category }}" class="card-img-top card-product-img rounded-top-4" alt="{{ product.name }}">
+                            {% endif %}
+                        </a>
+                    </div>
+                    
+                    <div class="card-body p-4 d-flex flex-column">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <small class="text-muted text-uppercase fw-bold" style="font-size: 0.7rem;">{{ product.category }}</small>
+                            <div class="text-warning small"><i class="fas fa-star"></i> 5.0</div>
+                        </div>
+                        
+                        <h5 class="card-title fw-bold mb-1">
+                            <a href="{{ url_for('product_detail', product_id=product.id) }}" class="text-decoration-none text-dark stretched-link">
+                                {{ product.name }}
+                            </a>
+                        </h5>
+                        
+                        <p class="card-text text-muted small flex-grow-1 text-truncate">
+                            {{ product.description or 'Premium quality product for developers.' }}
+                        </p>
+                        
+                        <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top position-relative" style="z-index: 5;">
+                            <span class="h5 mb-0 fw-bold text-primary">${{ "%.2f"|format(product.price) }}</span>
+                            <a href="{{ url_for('add_to_cart', product_id=product.id) }}" class="btn btn-outline-primary rounded-circle">
+                                <i class="fas fa-plus"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <!-- Fallback if database is empty -->
+            <div class="col-12 text-center py-5">
+                <p class="text-muted">No featured products found. Check back soon!</p>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- 5. FEATURES / WHY US -->
+    <section class="py-5 bg-white rounded-4 shadow-sm border mb-5 position-relative overflow-hidden">
+        <div class="container position-relative z-1">
+            <div class="row g-5 text-center">
+                <div class="col-md-4">
+                    <div class="mb-3 d-inline-flex p-3 rounded-circle bg-primary bg-opacity-10 text-primary">
+                        <i class="fas fa-bolt fa-2x"></i>
+                    </div>
+                    <h4 class="fw-bold">Instant Delivery</h4>
+                    <p class="text-muted px-3">Receive your digital licenses and software keys via email immediately after secure payment.</p>
+                </div>
+                <div class="col-md-4 border-start-md border-end-md">
+                    <div class="mb-3 d-inline-flex p-3 rounded-circle bg-success bg-opacity-10 text-success">
+                        <i class="fab fa-python fa-2x"></i>
+                    </div>
+                    <h4 class="fw-bold">Python Powered</h4>
+                    <p class="text-muted px-3">Built by developers, for developers. Every purchase supports the open-source ecosystem.</p>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3 d-inline-flex p-3 rounded-circle bg-info bg-opacity-10 text-info">
+                        <i class="fas fa-headset fa-2x"></i>
+                    </div>
+                    <h4 class="fw-bold">24/7 Support</h4>
+                    <p class="text-muted px-3">Stuck on a setup? Our technical support team is available around the clock to help you.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. FINAL CTA -->
+    <div class="rounded-4 p-5 text-center position-relative overflow-hidden shadow-lg" style="background: linear-gradient(135deg, #212529 0%, #343a40 100%);">
+        <div class="position-relative z-1 py-4">
+            <h2 class="display-5 fw-bold text-white mb-3">Join the Revolution</h2>
+            <p class="text-light opacity-75 mb-4 col-lg-6 mx-auto lead">
+                Experience the speed and security of a modern Flask application. Sign up today and get <strong>10% off</strong> your first order.
+            </p>
+            <div class="d-flex justify-content-center gap-3">
+                <a href="{{ url_for('shop_page') }}" class="btn btn-primary rounded-pill px-5 fw-bold btn-lg">
+                    Shop Now
+                </a>
+                {% if not current_user.is_authenticated %}
+                <a href="{{ url_for('register') }}" class="btn btn-outline-light rounded-pill px-5 fw-bold btn-lg">
+                    Sign Up
+                </a>
+                {% endif %}
+            </div>
+        </div>
+        <!-- Abstract background decoration -->
+        <div class="position-absolute top-0 end-0 bg-primary opacity-25 rounded-circle blur-3xl" style="width: 400px; height: 400px; filter: blur(100px); transform: translate(30%, -30%);"></div>
+        <div class="position-absolute bottom-0 start-0 bg-info opacity-10 rounded-circle blur-3xl" style="width: 300px; height: 300px; filter: blur(80px); transform: translate(-30%, 30%);"></div>
+    </div>
+
+</div> <!-- End Container -->
+
+{% endblock %}

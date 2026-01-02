@@ -1,0 +1,485 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="success-page">
+    <!-- Confetti Animation Container -->
+    <div class="confetti-container" id="confetti"></div>
+    
+    <div class="container">
+        <div class="row justify-content-center align-items-center min-vh-100 py-5">
+            <div class="col-lg-6 col-md-8 col-sm-11">
+                
+                <!-- Success Card -->
+                <div class="card border-0 shadow-lg rounded-4 overflow-hidden success-card">
+                    
+                    <!-- Animated Checkmark -->
+                    <div class="success-header text-center py-5">
+                        <div class="success-checkmark">
+                            <div class="check-icon">
+                                <span class="icon-line line-tip"></span>
+                                <span class="icon-line line-long"></span>
+                                <div class="icon-circle"></div>
+                                <div class="icon-fix"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Card Body -->
+                    <div class="card-body text-center px-4 px-md-5 pb-5">
+                        
+                        <h1 class="display-5 fw-bold text-success mb-3">Order Confirmed!</h1>
+                        
+                        <p class="lead mb-2">
+                            Thank you, <span class="fw-bold text-primary">{{ name }}</span>! 🎉
+                        </p>
+                        
+                        <p class="text-muted mb-4">
+                            Your order has been placed successfully and is being processed.
+                        </p>
+                        
+                        <!-- Order Info Box -->
+                        <div class="order-info-box bg-light rounded-3 p-4 mb-4">
+                            <div class="row text-start">
+                                <div class="col-6 mb-3">
+                                    <small class="text-muted d-block">Order Number</small>
+                                    <strong class="text-dark">#NXC{{ range(10000, 99999) | random }}</strong>
+                                </div>
+                                <div class="col-6 mb-3">
+                                    <small class="text-muted d-block">Order Date</small>
+                                    <strong class="text-dark">{{ now().strftime('%b %d, %Y') if now is defined else 'Today' }}</strong>
+                                </div>
+                                <div class="col-6">
+                                    <small class="text-muted d-block">Payment Method</small>
+                                    <strong class="text-dark">Cash on Delivery</strong>
+                                </div>
+                                <div class="col-6">
+                                    <small class="text-muted d-block">Estimated Delivery</small>
+                                    <strong class="text-success">3-5 Business Days</strong>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Order Timeline -->
+                        <div class="order-timeline mb-4">
+                            <div class="timeline-item active">
+                                <div class="timeline-icon">
+                                    <i class="bi bi-check-lg"></i>
+                                </div>
+                                <span>Order Placed</span>
+                            </div>
+                            <div class="timeline-line"></div>
+                            <div class="timeline-item">
+                                <div class="timeline-icon">
+                                    <i class="bi bi-box-seam"></i>
+                                </div>
+                                <span>Processing</span>
+                            </div>
+                            <div class="timeline-line"></div>
+                            <div class="timeline-item">
+                                <div class="timeline-icon">
+                                    <i class="bi bi-truck"></i>
+                                </div>
+                                <span>Shipped</span>
+                            </div>
+                            <div class="timeline-line"></div>
+                            <div class="timeline-item">
+                                <div class="timeline-icon">
+                                    <i class="bi bi-house-door"></i>
+                                </div>
+                                <span>Delivered</span>
+                            </div>
+                        </div>
+                        
+                        <!-- What's Next Section -->
+                        <div class="whats-next bg-success bg-opacity-10 rounded-3 p-4 mb-4 text-start">
+                            <h6 class="fw-bold text-success mb-3">
+                                <i class="bi bi-info-circle me-2"></i>What's Next?
+                            </h6>
+                            <ul class="list-unstyled mb-0">
+                                <li class="mb-2">
+                                    <i class="bi bi-envelope-check text-success me-2"></i>
+                                    You'll receive an email confirmation shortly
+                                </li>
+                                <li class="mb-2">
+                                    <i class="bi bi-bell text-success me-2"></i>
+                                    We'll notify you when your order ships
+                                </li>
+                                <li>
+                                    <i class="bi bi-geo-alt text-success me-2"></i>
+                                    Track your order from your account
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <!-- Action Buttons -->
+                        <div class="d-grid gap-3">
+                            <a href="{{ url_for('shop_page') }}" class="btn btn-success btn-lg py-3 fw-bold">
+                                <i class="bi bi-cart me-2"></i>Continue Shopping
+                            </a>
+                            <a href="{{ url_for('home') }}" class="btn btn-outline-secondary py-3">
+                                <i class="bi bi-house me-2"></i>Back to Home
+                            </a>
+                        </div>
+                        
+                        <!-- Share Section -->
+                        <div class="share-section mt-4 pt-4 border-top">
+                            <p class="text-muted mb-3">Share your experience</p>
+                            <div class="d-flex justify-content-center gap-2">
+                                <button class="btn btn-outline-primary btn-sm rounded-circle" style="width: 40px; height: 40px;">
+                                    <i class="bi bi-facebook"></i>
+                                </button>
+                                <button class="btn btn-outline-info btn-sm rounded-circle" style="width: 40px; height: 40px;">
+                                    <i class="bi bi-twitter"></i>
+                                </button>
+                                <button class="btn btn-outline-success btn-sm rounded-circle" style="width: 40px; height: 40px;">
+                                    <i class="bi bi-whatsapp"></i>
+                                </button>
+                                <button class="btn btn-outline-secondary btn-sm rounded-circle" style="width: 40px; height: 40px;">
+                                    <i class="bi bi-link-45deg"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Need Help -->
+                <div class="text-center mt-4">
+                    <p class="text-muted mb-0">
+                        Need help? <a href="#" class="text-success">Contact Support</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Custom Styles -->
+<style>
+    .success-page {
+        background: linear-gradient(135deg, #f0fff4 0%, #e6fffa 50%, #f0fff4 100%);
+        min-height: 100vh;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .success-card {
+        animation: slideUp 0.6s ease-out;
+    }
+    
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .success-header {
+        background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+    }
+    
+    /* Animated Checkmark */
+    .success-checkmark {
+        width: 100px;
+        height: 100px;
+        margin: 0 auto;
+    }
+    
+    .check-icon {
+        width: 100px;
+        height: 100px;
+        position: relative;
+        border-radius: 50%;
+        box-sizing: content-box;
+        border: 4px solid #28a745;
+    }
+    
+    .check-icon::before {
+        top: 3px;
+        left: -2px;
+        width: 30px;
+        transform-origin: 100% 50%;
+        border-radius: 100px 0 0 100px;
+    }
+    
+    .check-icon::after {
+        top: 0;
+        left: 30px;
+        width: 60px;
+        transform-origin: 0 50%;
+        border-radius: 0 100px 100px 0;
+        animation: rotate-circle 4.25s ease-in;
+    }
+    
+    .check-icon::before, .check-icon::after {
+        content: '';
+        height: 100px;
+        position: absolute;
+        background: #d4edda;
+        transform: rotate(-45deg);
+    }
+    
+    .check-icon .icon-line {
+        height: 5px;
+        background-color: #28a745;
+        display: block;
+        border-radius: 2px;
+        position: absolute;
+        z-index: 10;
+    }
+    
+    .check-icon .icon-line.line-tip {
+        top: 46px;
+        left: 14px;
+        width: 25px;
+        transform: rotate(45deg);
+        animation: icon-line-tip 0.75s;
+    }
+    
+    .check-icon .icon-line.line-long {
+        top: 38px;
+        right: 8px;
+        width: 47px;
+        transform: rotate(-45deg);
+        animation: icon-line-long 0.75s;
+    }
+    
+    .check-icon .icon-circle {
+        top: -4px;
+        left: -4px;
+        z-index: 10;
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        position: absolute;
+        box-sizing: content-box;
+        border: 4px solid rgba(40, 167, 69, 0.5);
+    }
+    
+    .check-icon .icon-fix {
+        top: 8px;
+        width: 5px;
+        left: 26px;
+        z-index: 1;
+        height: 85px;
+        position: absolute;
+        transform: rotate(-45deg);
+        background-color: #d4edda;
+    }
+    
+    @keyframes rotate-circle {
+        0% { transform: rotate(-45deg); }
+        5% { transform: rotate(-45deg); }
+        12% { transform: rotate(-405deg); }
+        100% { transform: rotate(-405deg); }
+    }
+    
+    @keyframes icon-line-tip {
+        0% { width: 0; left: 1px; top: 19px; }
+        54% { width: 0; left: 1px; top: 19px; }
+        70% { width: 50px; left: -8px; top: 37px; }
+        84% { width: 17px; left: 21px; top: 48px; }
+        100% { width: 25px; left: 14px; top: 46px; }
+    }
+    
+    @keyframes icon-line-long {
+        0% { width: 0; right: 46px; top: 54px; }
+        65% { width: 0; right: 46px; top: 54px; }
+        84% { width: 55px; right: 0px; top: 35px; }
+        100% { width: 47px; right: 8px; top: 38px; }
+    }
+    
+    /* Order Timeline */
+    .order-timeline {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px 0;
+    }
+    
+    .timeline-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .timeline-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #e9ecef;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #6c757d;
+        font-size: 16px;
+        transition: all 0.3s ease;
+    }
+    
+    .timeline-item.active .timeline-icon {
+        background: linear-gradient(135deg, #28a745, #20c997);
+        color: white;
+        box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
+        animation: pulse 2s infinite;
+    }
+    
+    .timeline-item span {
+        font-size: 11px;
+        color: #6c757d;
+        font-weight: 500;
+    }
+    
+    .timeline-item.active span {
+        color: #28a745;
+        font-weight: 600;
+    }
+    
+    .timeline-line {
+        width: 40px;
+        height: 3px;
+        background: #e9ecef;
+        margin: 0 5px;
+        margin-bottom: 25px;
+    }
+    
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+    }
+    
+    /* Order Info Box */
+    .order-info-box {
+        border: 1px solid #e9ecef;
+    }
+    
+    /* Button Styles */
+    .btn-success {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        border: none;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-success:hover {
+        background: linear-gradient(135deg, #218838 0%, #1aa179 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 20px rgba(40, 167, 69, 0.4);
+    }
+    
+    /* Confetti Styles */
+    .confetti-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 1000;
+    }
+    
+    .confetti {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        opacity: 0;
+        animation: confetti-fall 3s ease-in-out forwards;
+    }
+    
+    @keyframes confetti-fall {
+        0% {
+            opacity: 1;
+            top: -10%;
+            transform: translateX(0) rotateZ(0deg);
+        }
+        100% {
+            opacity: 0;
+            top: 100%;
+            transform: translateX(100px) rotateZ(720deg);
+        }
+    }
+    
+    /* Responsive */
+    @media (max-width: 576px) {
+        .timeline-line {
+            width: 20px;
+        }
+        
+        .timeline-icon {
+            width: 35px;
+            height: 35px;
+            font-size: 14px;
+        }
+        
+        .timeline-item span {
+            font-size: 10px;
+        }
+        
+        .order-info-box .row .col-6 {
+            font-size: 14px;
+        }
+    }
+</style>
+
+<!-- JavaScript for Confetti Animation -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    createConfetti();
+});
+
+function createConfetti() {
+    const container = document.getElementById('confetti');
+    const colors = ['#28a745', '#20c997', '#ffc107', '#17a2b8', '#dc3545', '#6f42c1', '#fd7e14'];
+    const shapes = ['circle', 'square', 'triangle'];
+    
+    for (let i = 0; i < 100; i++) {
+        setTimeout(() => {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
+            
+            // Random properties
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            const size = Math.random() * 10 + 5;
+            const left = Math.random() * 100;
+            const delay = Math.random() * 2;
+            const duration = Math.random() * 2 + 2;
+            
+            // Random shape
+            const shape = shapes[Math.floor(Math.random() * shapes.length)];
+            let borderRadius = '0';
+            if (shape === 'circle') {
+                borderRadius = '50%';
+            } else if (shape === 'triangle') {
+                confetti.style.width = '0';
+                confetti.style.height = '0';
+                confetti.style.borderLeft = `${size/2}px solid transparent`;
+                confetti.style.borderRight = `${size/2}px solid transparent`;
+                confetti.style.borderBottom = `${size}px solid ${color}`;
+                confetti.style.background = 'transparent';
+            }
+            
+            if (shape !== 'triangle') {
+                confetti.style.width = `${size}px`;
+                confetti.style.height = `${size}px`;
+                confetti.style.background = color;
+                confetti.style.borderRadius = borderRadius;
+            }
+            
+            confetti.style.left = `${left}%`;
+            confetti.style.animationDelay = `${delay}s`;
+            confetti.style.animationDuration = `${duration}s`;
+            
+            container.appendChild(confetti);
+            
+            // Remove confetti after animation
+            setTimeout(() => {
+                confetti.remove();
+            }, (delay + duration) * 1000);
+            
+        }, i * 30);
+    }
+}
+</script>
+{% endblock %}  

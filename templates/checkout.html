@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block title %}Checkout | Nexcart{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            
+            <!-- Breadcrumb / Back Link -->
+            <div class="mb-3">
+                <a href="{{ url_for('view_cart') }}" class="text-decoration-none text-muted small hover-primary">
+                    <i class="fas fa-arrow-left me-1"></i> Back to Cart
+                </a>
+            </div>
+
+            <!-- Main Checkout Card -->
+            <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+                <!-- Header -->
+                <div class="card-header bg-white border-bottom-0 pt-4 pb-0 text-center">
+                    <div class="mb-3">
+                        <span class="d-inline-block p-3 rounded-circle bg-light text-primary">
+                            <i class="fas fa-lock fa-2x"></i>
+                        </span>
+                    </div>
+                    <h3 class="fw-bold text-dark">Secure Checkout</h3>
+                    <p class="text-muted small">Complete your purchase securely</p>
+                </div>
+
+                <div class="card-body p-4 p-md-5">
+                    
+                    <!-- Total Price Display -->
+                    <div class="d-flex justify-content-between align-items-center bg-light p-3 rounded-3 mb-4 border border-dashed">
+                        <span class="text-muted fw-bold">Total Amount</span>
+                        <span class="fs-3 fw-bolder text-primary">${{ "%.2f"|format(total) }}</span>
+                    </div>
+
+                    <form method="POST">
+                        <!-- SECTION 1: SHIPPING -->
+                        <h6 class="text-uppercase text-muted fw-bold small mb-3">
+                            <i class="fas fa-shipping-fast me-2"></i>Shipping Information
+                        </h6>
+                        
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Full Name</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-white border-end-0 text-muted"><i class="fas fa-user"></i></span>
+                                <input type="text" name="name" class="form-control border-start-0 ps-0" placeholder="e.g. Guido van Rossum" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label small fw-bold">Shipping Address</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-white border-end-0 text-muted"><i class="fas fa-map-marker-alt"></i></span>
+                                <input type="text" name="address" class="form-control border-start-0 ps-0" placeholder="123 Code Lane, Tech City" required>
+                            </div>
+                        </div>
+
+                        <!-- SECTION 2: PAYMENT (SIMULATED) -->
+                        <div class="d-flex justify-content-between align-items-center mb-3 mt-5">
+                            <h6 class="text-uppercase text-muted fw-bold small mb-0">
+                                <i class="fas fa-credit-card me-2"></i>Payment Details
+                            </h6>
+                            <div class="text-muted">
+                                <i class="fab fa-cc-visa fa-lg"></i>
+                                <i class="fab fa-cc-mastercard fa-lg"></i>
+                                <i class="fab fa-cc-amex fa-lg"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label class="form-label small fw-bold">Card Number</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white border-end-0 text-muted"><i class="fas fa-credit-card"></i></span>
+                                    <!-- Using type="text" for demo simplicity, in real app use Stripe Elements -->
+                                    <input type="text" class="form-control border-start-0 ps-0" placeholder="0000 0000 0000 0000" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Expiry Date</label>
+                                <input type="text" class="form-control" placeholder="MM/YY" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">CVC</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control border-end-0" placeholder="123" required>
+                                    <span class="input-group-text bg-white border-start-0 text-muted"><i class="fas fa-question-circle"></i></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="my-5 opacity-10">
+
+                        <!-- Submit Button -->
+                        <button class="btn btn-primary w-100 btn-lg rounded-pill shadow-lg py-3 fw-bold" type="submit">
+                            Pay ${{ "%.2f"|format(total) }} Now
+                        </button>
+                        
+                        <div class="text-center mt-3">
+                            <small class="text-muted"><i class="fas fa-shield-alt me-1"></i> Simulated Payment for Demo</small>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

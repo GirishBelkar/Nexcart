@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.pyc
+
+# Environment & Config
+.env
+venv/
+instance/
+
+# Database
+shop.db
+*.db
+*.sqlite3
+
+# OS Files
+.DS_Store
+
+# User Uploads (Don't track uploaded product images, but keep the folder)
+static/images/*
+!static/images/.gitkeep
